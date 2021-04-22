@@ -1,0 +1,6 @@
+name: AutoAnnouncer
+main: me.tatteaid.AutoAnnouncer
+version: 1.0.0
+api-version: 1.16
+author: Ambrosia
+description: An auto-announcement plugin that provides all of the essentials.
