@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.16.2-R0.1-SNAPSHOT'
+    compileOnly group: 'com.destroystokyo.paper', name: 'paper-api', version: '1.16.5-R0.1-SNAPSHOT'
 
     compileOnly 'me.clip:placeholderapi:2.10.9'
 

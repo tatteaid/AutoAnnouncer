@@ -1,0 +1,6 @@
+# Do not change, it will break your configuration
+CONFIG_VERSION: 3.0
+
+test_content: "Another test"
+
+test_content_v2: "lol"
