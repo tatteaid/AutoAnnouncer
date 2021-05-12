@@ -16,27 +16,34 @@ public class AnnouncerCommand implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "You do not have permission for this command.");
         }
 
-        if (args.length == 0) {
+        if(args.length == 0) {
             player.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
             player.sendMessage(ChatColor.BLUE.toString() + ChatColor.BOLD + "Commands:");
             player.sendMessage(ChatColor.AQUA + "/announcer help");
             player.sendMessage(ChatColor.AQUA + "/announcer version");
             player.sendMessage(ChatColor.AQUA + "/announcer author");
             player.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "--------------------------------------------");
-        } else if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("help")) {
-                player.sendMessage("This is a help message.");
-            } else if (args[0].equalsIgnoreCase("version")) {
-                player.sendMessage("This is a version message.");
-            } else if (args[0].equalsIgnoreCase("author")) {
-                player.sendMessage("This is an author message.");
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+            return true;
         }
 
+        if(args.length == 1) {
+            if(args[0].equalsIgnoreCase("help")) {
+                player.sendMessage("This is a help message.");
+                return true;
+            }
+
+            if(args[0].equalsIgnoreCase("version")) {
+                player.sendMessage("This is a version message.");
+                return true;
+            }
+
+            if(args[0].equalsIgnoreCase("author")) {
+                player.sendMessage("This is an author message.");
+                return true;
+            }
+        }
+
+        player.sendMessage(ChatColor.RED + "Usage: /announcer [help/version/author]");
         return true;
     }
 }

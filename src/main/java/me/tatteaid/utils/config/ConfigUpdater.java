@@ -9,10 +9,7 @@ import org.bukkit.util.FileUtil;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ConfigUpdater {
@@ -51,32 +48,58 @@ public class ConfigUpdater {
             File oldFile = new File(instance.getDataFolder(), "config.old.yml");
             FileConfiguration oldConfig = YamlConfiguration.loadConfiguration(oldFile);
 
-            // creates a new config which the values will be copied over too
+            // creates a new default config which the values will be copied over too
             instance.saveDefaultConfig();
 
+            // TODO: logic that transfer old data to new data and keeps the new values
             Map<String, Object> oldValues = oldConfig.getValues(false);
-            List<String> comments = new ArrayList<>();
+            List<String> defaultLines = new ArrayList<>();
+            List<String> newLines = new ArrayList<>();
 
+            /**
+             * Handles the scanning & storing of content in config.old.yml & config.yml
+             * This will deal with comparing & updating both files later on
+             *
+             * oldFileScanner - scans the old files content (config.old.yml) and stores content in the oldLines arraylist
+             * newFileScanner - scans the newly generated files content (config.yml) and stores content in the newLines arraylist
+             */
             try {
-                BufferedReader reader = new BufferedReader(new FileReader(oldFile));
+                Scanner newDefaultLineScanner = new Scanner(file);
+
+                while(newDefaultLineScanner.hasNextLine()) {
+                    defaultLines.add(newDefaultLineScanner.nextLine());
+                    AutoAnnouncer.log(Level.INFO, "New Lines Size: " + defaultLines.size());
+                }
+
+                newDefaultLineScanner.close();
             } catch (FileNotFoundException exception) {
-                AutoAnnouncer.log(Level.SEVERE, "Could not find the config file.");
+                AutoAnnouncer.log(Level.SEVERE, "Could not find the old configuration file to scan from.");
             }
 
-            // TODO: logic that transfer old data to new data and keeps the new values
+            for(String line : defaultLines) {
+                if(!line.startsWith("CONFIG_VERSION")) {
+                    System.out.println("Line Output: " + line);
+
+                    for(String node : oldValues.keySet()) {
+                        System.out.println("Old Value Node Output: " + node);
+                    }
+                } else {
+                    // do nothing, we do not want to change the new config version'
+                    System.out.println("Line Starts With CONFIG_VERSION: Nothing");
+                }
+            }
 
             // handles the deleting of the old config file
-            try {
+            /*try {
                 Files.delete(oldFile.toPath());
                 AutoAnnouncer.log(Level.INFO, "Deleted the old configuration file.");
             } catch (IOException exception) {
                 AutoAnnouncer.log(Level.SEVERE, "Could not delete the old configuration file.");
-            }
+            }*/
 
             AutoAnnouncer.log(Level.INFO, "File path: " + file.toPath());
             AutoAnnouncer.log(Level.INFO, "Old file path: " + oldFile.toPath());
             AutoAnnouncer.log(Level.INFO, "Finished updating the configuration file...");
-            return;
         }
     }
 }

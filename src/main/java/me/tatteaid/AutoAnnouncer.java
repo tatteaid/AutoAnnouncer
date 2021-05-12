@@ -15,7 +15,7 @@ public class AutoAnnouncer extends JavaPlugin {
     private BukkitTask announcementTask;
     private ConfigUpdater configUpdater;
 
-    public static final double CONFIG_VERSION = 7.0;
+    public static final double CONFIG_VERSION = 1.0;
 
     @Override
     public void onEnable() {
