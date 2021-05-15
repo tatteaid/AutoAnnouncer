@@ -1,17 +1,21 @@
 package me.tatteaid.utils.config;
 
 import me.tatteaid.AutoAnnouncer;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.FileUtil;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 
+/**
+ * For the general idea of the configuration updater with some modifications made to adapt to this plugin, all credits go to...
+ *
+ * @author mfnalex
+ * @see https://github.com/JEFF-Media-GbR/Spigot-ChestSort/blob/master/src/main/java/de/jeff_media/ChestSort/ChestSortConfigUpdater.java
+ */
+// TODO: document code much better tomorrow
 public class ConfigUpdater {
 
     private final AutoAnnouncer instance;
@@ -40,7 +44,7 @@ public class ConfigUpdater {
             // handles the renaming logic behind the old config file
             try {
                 Files.move(file.toPath(), file.toPath().resolveSibling("config.old.yml"));
-                AutoAnnouncer.log(Level.INFO, "Renamed the old configuration file.");
+                if(instance.isDebug()) AutoAnnouncer.log(Level.INFO, "Renamed the old configuration file.");
             } catch (IOException exception) {
                 AutoAnnouncer.log(Level.SEVERE, "Could not rename the configuration file.");
             }
@@ -68,7 +72,6 @@ public class ConfigUpdater {
 
                 while(newDefaultLineScanner.hasNextLine()) {
                     defaultLines.add(newDefaultLineScanner.nextLine());
-                    AutoAnnouncer.log(Level.INFO, "New Lines Size: " + defaultLines.size());
                 }
 
                 newDefaultLineScanner.close();
@@ -76,29 +79,45 @@ public class ConfigUpdater {
                 AutoAnnouncer.log(Level.SEVERE, "Could not find the old configuration file to scan from.");
             }
 
-            for(String line : defaultLines) {
-                if(!line.startsWith("CONFIG_VERSION")) {
-                    System.out.println("Line Output: " + line);
-
-                    for(String node : oldValues.keySet()) {
-                        System.out.println("Old Value Node Output: " + node);
-                    }
+            for(String newLine : defaultLines) {
+                if(newLine.startsWith("CONFIG_VERSION")) {
+                    // do nothing, we do not want to change the new config version
                 } else {
-                    // do nothing, we do not want to change the new config version'
-                    System.out.println("Line Starts With CONFIG_VERSION: Nothing");
+                    for(String node : oldValues.keySet()) {
+                        if(newLine.startsWith(node + ":")) {
+                            newLine = node + ": " + "'" + oldValues.get(node).toString() + "'";
+                            break;
+                        }
+                    }
+                }
+
+                if(newLine != null) {
+                    newLines.add(newLine);
                 }
             }
 
+            // writes the content to the new config file
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                String[] newLineArray = newLines.toArray(new String[newLines.size()]);
+
+                for (String line : newLineArray) {
+                    writer.write(line + "\n");
+                }
+
+                writer.close();
+            } catch (IOException exception) {
+                AutoAnnouncer.log(Level.SEVERE, "Could not write to the new configuration file.");
+            }
+
             // handles the deleting of the old config file
-            /*try {
+            try {
                 Files.delete(oldFile.toPath());
-                AutoAnnouncer.log(Level.INFO, "Deleted the old configuration file.");
+                if(instance.isDebug()) AutoAnnouncer.log(Level.INFO, "Deleted the old configuration file.");
             } catch (IOException exception) {
                 AutoAnnouncer.log(Level.SEVERE, "Could not delete the old configuration file.");
-            }*/
+            }
 
-            AutoAnnouncer.log(Level.INFO, "File path: " + file.toPath());
-            AutoAnnouncer.log(Level.INFO, "Old file path: " + oldFile.toPath());
             AutoAnnouncer.log(Level.INFO, "Finished updating the configuration file...");
         }
     }

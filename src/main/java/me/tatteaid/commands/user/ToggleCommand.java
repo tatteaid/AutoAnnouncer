@@ -1,4 +1,4 @@
-package me.tatteaid.commands;
+package me.tatteaid.commands.user;
 
 import me.tatteaid.AutoAnnouncer;
 import org.bukkit.command.Command;

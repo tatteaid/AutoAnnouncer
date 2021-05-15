@@ -15,7 +15,9 @@ public class AutoAnnouncer extends JavaPlugin {
     private BukkitTask announcementTask;
     private ConfigUpdater configUpdater;
 
-    public static final double CONFIG_VERSION = 1.0;
+    private boolean debug;
+
+    public static final double CONFIG_VERSION = 3.0;
 
     @Override
     public void onEnable() {
@@ -32,6 +34,8 @@ public class AutoAnnouncer extends JavaPlugin {
 
         configUpdater = new ConfigUpdater(this);
         configUpdater.updateConfig();
+
+        debug = this.getConfig().getBoolean("debug");
 
         registerCommands();
 

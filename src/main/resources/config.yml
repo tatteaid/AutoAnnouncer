@@ -1,6 +1,8 @@
 # Do not change, it will break your configuration
-CONFIG_VERSION: 1.0
+CONFIG_VERSION: 3.0
+
+debug: true
 
 test_content: "Another test"
 
-lol_content: "looooooool"
+test_lol: "lol"
