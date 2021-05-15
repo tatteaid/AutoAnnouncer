@@ -1,4 +1,4 @@
 package me.tatteaid.announcements;
 
-public class AnnouncementHandler {
+public class AnnouncementManager {
 }

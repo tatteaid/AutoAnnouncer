@@ -2,8 +2,7 @@ package me.tatteaid;
 
 import lombok.Getter;
 import me.tatteaid.commands.AnnouncerCommand;
-import me.tatteaid.announcements.AnnouncementTask;
-import me.tatteaid.utils.config.ConfigCreator;
+import me.tatteaid.utils.config.ConfigUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -14,40 +13,29 @@ import java.util.logging.Level;
 public class AutoAnnouncer extends JavaPlugin {
 
     private BukkitTask announcementTask;
-    private ConfigCreator languageFile;
-    private ConfigCreator otherTestFile;
+    private ConfigUpdater configUpdater;
+
+    private boolean debug;
 
     public static final double CONFIG_VERSION = 3.0;
 
     @Override
     public void onEnable() {
-        announcementTask = new AnnouncementTask().runTaskTimer(this, 120L, 120L);
+        //announcementTask = new AnnouncementTask().runTaskTimer(this, 120L, 120L);
 
         // doesnt add new content to the config unless the file is deleted
-        this.getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        this.getConfig().options().copyDefaults(true);
 
-        languageFile = new ConfigCreator(this, "language");
-        System.out.println(languageFile);
-        System.out.println(languageFile.getFile());
-        System.out.println(languageFile.getFileName());
+        System.out.println("Actual Config Version: " + CONFIG_VERSION);
+        System.out.println("Config Version: " + this.getConfig().getDouble("CONFIG_VERSION"));
+        System.out.println("Config Values False: " + getConfig().getValues(false));
+        System.out.println("Config Values True: " + getConfig().getValues(true));
 
-        otherTestFile = new ConfigCreator(this, "other_test");
-        System.out.println(otherTestFile);
-        System.out.println(otherTestFile.getFile());
-        System.out.println(otherTestFile.getFileName());
+        configUpdater = new ConfigUpdater(this);
+        configUpdater.updateConfig();
 
-        System.out.println(languageFile.getString("test"));
-        System.out.println(otherTestFile.getString("test"));
-
-        System.out.println(getConfig().getValues(false));
-        System.out.println(getConfig().getValues(true));
-
-        System.out.println(languageFile.getValues(false));
-        System.out.println(languageFile.getValues(true));
-
-        System.out.println(otherTestFile.getValues(false));
-        System.out.println(otherTestFile.getValues(true));
+        debug = this.getConfig().getBoolean("debug");
 
         registerCommands();
 
@@ -56,7 +44,7 @@ public class AutoAnnouncer extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        announcementTask.cancel();
+        //announcementTask.cancel();
     }
 
     private void registerCommands() {
@@ -64,6 +52,6 @@ public class AutoAnnouncer extends JavaPlugin {
     }
 
     public static void log(Level level, String message) {
-        Bukkit.getLogger().log(level, message);
+        Bukkit.getLogger().log(level, "[AutoAnnouncer] " + message);
     }
 }
