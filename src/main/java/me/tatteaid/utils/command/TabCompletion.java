@@ -1,4 +1,4 @@
 package me.tatteaid.utils.command;
 
-public class CommandManager {
+public class TabCompletion {
 }
