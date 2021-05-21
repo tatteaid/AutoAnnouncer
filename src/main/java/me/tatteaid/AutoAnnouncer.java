@@ -1,7 +1,10 @@
 package me.tatteaid;
 
 import lombok.Getter;
+import me.tatteaid.announcements.AnnouncementManager;
+import me.tatteaid.announcements.AnnouncementTask;
 import me.tatteaid.commands.AnnouncerCommand;
+import me.tatteaid.utils.config.ConfigCreator;
 import me.tatteaid.utils.config.ConfigUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,8 +15,12 @@ import java.util.logging.Level;
 @Getter
 public class AutoAnnouncer extends JavaPlugin {
 
+    private AnnouncementManager announcementManager;
+
     private BukkitTask announcementTask;
     private ConfigUpdater configUpdater;
+
+    private ConfigCreator languageFile;
 
     private boolean debug;
 
@@ -21,21 +28,20 @@ public class AutoAnnouncer extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //announcementTask = new AnnouncementTask().runTaskTimer(this, 120L, 120L);
-
-        // doesnt add new content to the config unless the file is deleted
         saveDefaultConfig();
         this.getConfig().options().copyDefaults(true);
-
-        System.out.println("Actual Config Version: " + CONFIG_VERSION);
-        System.out.println("Config Version: " + this.getConfig().getDouble("CONFIG_VERSION"));
-        System.out.println("Config Values False: " + getConfig().getValues(false));
-        System.out.println("Config Values True: " + getConfig().getValues(true));
 
         configUpdater = new ConfigUpdater(this);
         configUpdater.updateConfig();
 
         debug = this.getConfig().getBoolean("debug");
+
+        languageFile = new ConfigCreator(this);
+        languageFile.loadFile("language.yml");
+
+        announcementManager = new AnnouncementManager();
+
+        announcementTask = new AnnouncementTask(this).runTaskTimer(this, 120L, 120L);
 
         registerCommands();
 
@@ -44,11 +50,11 @@ public class AutoAnnouncer extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        //announcementTask.cancel();
+        announcementTask.cancel();
     }
 
     private void registerCommands() {
-        this.getCommand("announcer").setExecutor(new AnnouncerCommand());
+        this.getCommand("announcer").setExecutor(new AnnouncerCommand(this));
     }
 
     public static void log(Level level, String message) {

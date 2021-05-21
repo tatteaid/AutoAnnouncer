@@ -1,5 +1,6 @@
 package me.tatteaid.announcements;
 
+import me.tatteaid.AutoAnnouncer;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,18 +20,20 @@ import java.util.List;
  */
 public class AnnouncementTask extends BukkitRunnable {
 
-    private List<String> announcements = new ArrayList<>();
+    private final AutoAnnouncer instance;
     private int counter = 0;
 
-    public AnnouncementTask() {
-        announcements.add("Test announcement 1.");
-        announcements.add("Test announcement 2.");
-        announcements.add("Test announcement 3.");
+    public AnnouncementTask(AutoAnnouncer instance) {
+        this.instance = instance;
+
+        instance.getAnnouncementManager().getAnnouncements().add("Test Announcement 1.");
+        instance.getAnnouncementManager().getAnnouncements().add("Test Announcement 2.");
+        instance.getAnnouncementManager().getAnnouncements().add("Test Announcement 3.");
     }
 
     @Override
     public void run() {
-        Bukkit.broadcastMessage(announcements.get(counter++));
-        if(counter >= announcements.size()) counter = 0;
+        Bukkit.broadcastMessage(instance.getAnnouncementManager().getAnnouncements().get(counter++));
+        if(counter >= instance.getAnnouncementManager().getAnnouncements().size()) counter = 0;
     }
 }

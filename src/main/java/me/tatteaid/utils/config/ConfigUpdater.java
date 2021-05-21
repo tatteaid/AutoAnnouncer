@@ -24,6 +24,7 @@ public class ConfigUpdater {
         this.instance = instance;
     }
 
+    // TODO: complete more testing on the config updater, maybe try out 2 semi-colons?
     public void updateConfig() {
         if (!instance.getConfig().contains("CONFIG_VERSION")) {
             AutoAnnouncer.log(Level.SEVERE, "The configuration does not have a config_version.");
@@ -99,6 +100,7 @@ public class ConfigUpdater {
             // writes the content to the new config file
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                // TODO: try the suggestion that the IDE is given, change the newLines.size() to 0
                 String[] newLineArray = newLines.toArray(new String[newLines.size()]);
 
                 for (String line : newLineArray) {
