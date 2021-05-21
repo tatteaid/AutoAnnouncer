@@ -2,7 +2,9 @@ package me.tatteaid;
 
 import lombok.Getter;
 import me.tatteaid.announcements.AnnouncementManager;
+import me.tatteaid.announcements.AnnouncementTask;
 import me.tatteaid.commands.AnnouncerCommand;
+import me.tatteaid.utils.config.ConfigCreator;
 import me.tatteaid.utils.config.ConfigUpdater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,14 +20,14 @@ public class AutoAnnouncer extends JavaPlugin {
     private BukkitTask announcementTask;
     private ConfigUpdater configUpdater;
 
+    private ConfigCreator languageFile;
+
     private boolean debug;
 
     public static final double CONFIG_VERSION = 3.0;
 
     @Override
     public void onEnable() {
-        //announcementTask = new AnnouncementTask().runTaskTimer(this, 120L, 120L);
-
         saveDefaultConfig();
         this.getConfig().options().copyDefaults(true);
 
@@ -34,7 +36,12 @@ public class AutoAnnouncer extends JavaPlugin {
 
         debug = this.getConfig().getBoolean("debug");
 
+        languageFile = new ConfigCreator(this);
+        languageFile.loadFile("language.yml");
+
         announcementManager = new AnnouncementManager();
+
+        announcementTask = new AnnouncementTask(this).runTaskTimer(this, 120L, 120L);
 
         registerCommands();
 
@@ -43,11 +50,11 @@ public class AutoAnnouncer extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        //announcementTask.cancel();
+        announcementTask.cancel();
     }
 
     private void registerCommands() {
-        this.getCommand("announcer").setExecutor(new AnnouncerCommand());
+        this.getCommand("announcer").setExecutor(new AnnouncerCommand(this));
     }
 
     public static void log(Level level, String message) {

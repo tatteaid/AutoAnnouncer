@@ -33,7 +33,7 @@ public class AnnouncementTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        Bukkit.broadcastMessage(announcements.get(counter++));
-        if(counter >= announcements.size()) counter = 0;
+        Bukkit.broadcastMessage(instance.getAnnouncementManager().getAnnouncements().get(counter++));
+        if(counter >= instance.getAnnouncementManager().getAnnouncements().size()) counter = 0;
     }
 }
